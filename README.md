@@ -103,6 +103,51 @@ immich-motion-deduplicator all --dry-run
 immich-motion-deduplicator all
 ```
 
+## Android Live Photos
+
+Some Android phones export live photos as two separate files: a still image and a standalone `.mp4` motion video. After import, Immich stores the motion video as a `livePhotoVideoId` asset linked to the image. If the standalone `.mp4` was also imported separately, it appears as a duplicate video asset.
+
+`scan-live` finds these duplicates by:
+1. Fetching all live photo image assets from the Immich API to collect their associated motion video IDs
+2. Fetching all video assets and excluding those already linked as motion videos
+3. Pairing remaining standalone videos with live photo motion videos by capture time (±`--time-window` seconds)
+4. Fingerprinting matched pairs: SHA256 exact match first, then ffmpeg + perceptual hash fallback
+
+### New Environment Variables
+
+| Variable | Description |
+|---|---|
+| `LIVE_CANDIDATES_CSV` | Output path for `scan-live` results; used as input to `delete` in the `all-live` flow |
+| `IMMICH_SERVER_PATH_PREFIX` | Server-side path prefix to strip from Immich `originalPath` before resolving against `IMMICH_ROOT_DIR`. Example: `/usr/src/app/upload` |
+
+### Commands
+
+```bash
+# Scan only — writes matches to LIVE_CANDIDATES_CSV
+immich-motion-deduplicator scan-live
+
+# Full workflow — scan then delete (dry-run preview)
+immich-motion-deduplicator all-live --dry-run
+
+# Full workflow — scan then delete
+immich-motion-deduplicator all-live
+```
+
+### Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--time-window N` | `60` | Seconds around capture time to search for matching live photo |
+| `--fps F` | `5.0` | Frame sampling rate for perceptual hashing |
+| `--hamming-threshold N` | `8` | Maximum average Hamming distance to count as a perceptual match |
+| `--skip-perceptual` | off | Skip ffmpeg/imagehash; use SHA256 exact match only |
+| `--progress-every N` | `100` | Print progress every N candidates checked (0 = disable) |
+
+### Requirements
+
+- `ffmpeg` must be on `PATH` for perceptual hashing (use `--skip-perceptual` to disable)
+- `imagehash` and `Pillow` Python packages (included in package dependencies)
+
 ## Docker
 
 Docker is useful as an optional distribution path for one-off runs and automation. The repository includes a `Dockerfile` and `docker-compose.example.yml`.
