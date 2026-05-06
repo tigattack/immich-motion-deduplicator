@@ -48,6 +48,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=ref,event=pr
+            type=ref,event=branch
 
       - name: Build image
         uses: docker/build-push-action@v7
