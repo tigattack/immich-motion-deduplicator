@@ -43,3 +43,13 @@ def get_immich_api_url():
     if not api_url.endswith("/api"):
         api_url = f"{api_url}/api"
     return api_url
+
+
+def resolve_server_path(original_path: str, server_prefix: str, local_root: str) -> str:
+    if not original_path.startswith(server_prefix):
+        raise ValueError(
+            f"originalPath '{original_path}' does not start with IMMICH_SERVER_PATH_PREFIX '{server_prefix}'. Check your configuration."
+        )
+
+    path = original_path[len(server_prefix):]
+    return os.path.join(local_root, path.lstrip('/'))
