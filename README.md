@@ -107,13 +107,7 @@ immich-motion-deduplicator all
 
 Docker is useful as an optional distribution path for one-off runs and automation. The repository includes a `Dockerfile` and `docker-compose.example.yml`.
 
-Build the image:
-
-```bash
-docker build -t immich-motion-deduplicator .
-```
-
-Run it:
+To run with Docker:
 
 ```bash
 docker run --rm \
@@ -121,10 +115,17 @@ docker run --rm \
   -v /path/to/your/immich/library:/library:ro \
   -v "$PWD":/work \
   -w /work \
-  immich-motion-deduplicator all --dry-run
+  ghcr.io/itswavs/immich-motion-deduplicator:latest \
+  all --dry-run
 ```
 
 When running in Docker, set `IMMICH_ROOT_DIR=/library` inside `.env` or pass it explicitly as an environment variable.
+
+You can optionally also build your own copy of the image:
+
+```bash
+docker build -t immich-motion-deduplicator .
+```
 
 ## Development
 
