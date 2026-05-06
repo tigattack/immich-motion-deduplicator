@@ -78,6 +78,8 @@ def test_main_runs_all_dry_run_when_requested(monkeypatch):
     __main__.main()
 
     assert calls == [("scan", 500), ("ids", None), ("delete", True)]
+
+
 def test_scan_live_command_uses_expected_defaults():
     parser = __main__.build_parser()
     args = parser.parse_args(["scan-live"])
@@ -88,12 +90,14 @@ def test_scan_live_command_uses_expected_defaults():
     assert args.skip_perceptual is False
     assert args.progress_every == 100
 
+
 def test_scan_live_command_accepts_custom_scan_args():
     parser = __main__.build_parser()
     args = parser.parse_args(["scan-live", "--time-window", "30", "--hamming-threshold", "5"])
     assert args.command == "scan-live"
     assert args.time_window == 30
     assert args.hamming_threshold == 5
+
 
 def test_main_routes_scan_live_with_expected_kwargs(monkeypatch):
     calls = []

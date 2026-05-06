@@ -4,6 +4,8 @@ import subprocess
 from io import BytesIO
 from typing import Any, List
 
+from PIL import Image  # type: ignore[reportMissingImports]
+
 
 PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 
@@ -74,7 +76,6 @@ def _extract_frames_with_offset(path: str, fps: float, start_seconds: float = 0.
     for chunk in stdout.split(PNG_MAGIC):
         if not chunk:
             continue
-        from PIL import Image  # type: ignore[reportMissingImports]
 
         image = Image.open(BytesIO(PNG_MAGIC + chunk))
         frames.append(image.copy())
