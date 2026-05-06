@@ -14,7 +14,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository}}
-  PLATFORMS: linux/amd64, linux/arm64, linux/arm/v6
+  PLATFORMS: linux/amd64, linux/arm64
 
 jobs:
   build:
