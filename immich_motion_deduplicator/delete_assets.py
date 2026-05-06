@@ -1,6 +1,7 @@
 import csv
 import math
 import time
+from typing import Optional
 
 import requests
 from rich.progress import (
@@ -43,11 +44,12 @@ def delete_batch(ids, api_url, headers):
         return {"status_code": response.status_code, "message": "No content returned"}
 
 
-def run(batch_size=BATCH_SIZE, dry_run=DRY_RUN):
+def run(batch_size=BATCH_SIZE, dry_run=DRY_RUN, input_csv: Optional[str] = None):
     load_dotenv()
     api_url = get_immich_api_url()
     api_key = require_env("IMMICH_API_KEY")
-    input_csv = require_env("MOTION_CANDIDATES_WITH_IDS_CSV")
+    if input_csv is None:
+        input_csv = require_env("MOTION_CANDIDATES_WITH_IDS_CSV")
     headers = {
         "x-api-key": api_key,
         "Content-Type": "application/json",
