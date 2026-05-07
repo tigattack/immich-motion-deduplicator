@@ -7,8 +7,9 @@ services:
     env_file:
       - .env
     environment:
-      IMMICH_ROOT_DIR: /library
+      IMMICH_ROOT_DIR: /data
+      IMMICH_SERVER_PATH_PREFIX: /data
     volumes:
       - ./:/work
-      - /path/to/your/immich/library:/library:ro
+      - /path/to/your/immich/data:/data:ro
     command: ["all", "--dry-run"]

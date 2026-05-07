@@ -157,14 +157,23 @@ To run with Docker:
 ```bash
 docker run --rm \
   --env-file .env \
-  -v /path/to/your/immich/library:/library:ro \
+  -v /path/to/your/immich/data:/data:ro \
   -v "$PWD":/work \
   -w /work \
   ghcr.io/itswavs/immich-motion-deduplicator:latest \
   all --dry-run
 ```
 
-When running in Docker, set `IMMICH_ROOT_DIR=/library` inside `.env` or pass it explicitly as an environment variable.
+Mount the entire Immich data directory (the parent of `library`, `upload`, `encoded-video`, etc.), not just the `library` subdirectory. Immich stores assets across multiple subdirectories and `scan-live` needs access to all of them.
+
+Set in `.env`:
+
+```env
+IMMICH_ROOT_DIR=/data
+IMMICH_SERVER_PATH_PREFIX=/data
+```
+
+`ffmpeg` is included in the Docker image. To use `--skip-perceptual` (SHA256 only, no ffmpeg), no extra setup is needed.
 
 You can optionally also build your own copy of the image:
 
