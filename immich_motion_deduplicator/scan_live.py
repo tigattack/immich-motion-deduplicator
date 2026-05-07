@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Tuple
 
 from .config import get_immich_api_url, load_dotenv, require_directory_env, require_env, resolve_server_path
 from .fingerprint import sha256_file, videos_match
-from .immich_api import search_assets
+from .immich_api import get_asset, search_assets
 from .ui import console, error_console, print_summary
 
 
@@ -70,6 +70,16 @@ def run(
 
     for asset in search_assets(api_url, headers, {"type": "VIDEO"}):
         video_assets_by_id[asset["id"]] = asset
+
+    missing_motion_ids = live_photo_video_ids - video_assets_by_id.keys()
+    if missing_motion_ids:
+        console.print(
+            f"Fetching [bold]{len(missing_motion_ids)}[/bold] motion video assets not returned by search..."
+        )
+        for motion_id in missing_motion_ids:
+            asset = get_asset(api_url, headers, motion_id)
+            if asset is not None:
+                video_assets_by_id[motion_id] = asset
 
     standalone_candidates = [
         asset

@@ -1,4 +1,4 @@
-from typing import Dict, Iterator
+from typing import Dict, Iterator, Optional
 
 import requests  # pyright: ignore[reportMissingModuleSource]
 
@@ -34,3 +34,15 @@ def search_assets(api_url: str, headers: Dict[str, str], payload: Dict[str, obje
             break
 
         page += 1
+
+
+def get_asset(api_url: str, headers: Dict[str, str], asset_id: str) -> Optional[dict]:
+    response = requests.get(
+        f"{api_url}/assets/{asset_id}",
+        headers=headers,
+        timeout=30,
+    )
+    if response.status_code == 404:
+        return None
+    response.raise_for_status()
+    return response.json()
