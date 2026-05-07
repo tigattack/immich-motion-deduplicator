@@ -98,6 +98,14 @@ def run(
         if dt is not None:
             live_photo_index.append((dt, lp))
 
+    console.print(f"Built time index with [bold]{len(live_photo_index)}[/bold] live photos with parseable timestamps.")
+
+    live_photo_index: List[Tuple[datetime, Dict]] = []
+    for lp in live_photos:
+        dt = _parse_local_datetime(lp["localDateTime"])
+        if dt is not None:
+            live_photo_index.append((dt, lp))
+
     live_photo_index.sort(key=lambda x: x[0])
     live_photo_datetimes: List[datetime] = [entry[0] for entry in live_photo_index]
 
@@ -110,7 +118,7 @@ def run(
         checked += 1
 
         if progress_every > 0 and checked % progress_every == 0:
-            console.log(f"Checked {checked} candidates, {len(results)} matches so far.")
+            console.log(f"Checked {checked}/{len(standalone_candidates)} candidates, {len(results)} matches so far.")
 
         standalone_dt = _parse_local_datetime(asset.get("localDateTime", ""))
         if standalone_dt is None:
