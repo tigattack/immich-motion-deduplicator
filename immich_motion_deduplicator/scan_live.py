@@ -188,6 +188,8 @@ def run(
                         hamming_threshold=hamming_threshold,
                         fps=fps,
                     )
+                except OSError:
+                    continue
                 except RuntimeError as exc:
                     error_console.print(
                         f"[yellow]Warning:[/yellow] {exc} for {standalone_path}, skipping"
