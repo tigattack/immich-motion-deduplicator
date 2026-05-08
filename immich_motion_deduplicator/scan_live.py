@@ -116,6 +116,7 @@ def run(
     exact_matches = 0
     perceptual_matches = 0
 
+    console.print(f"Starting loop over {len(standalone_candidates)} candidates...")
     for asset in standalone_candidates:
         checked += 1
 
