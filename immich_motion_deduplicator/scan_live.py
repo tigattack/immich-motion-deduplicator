@@ -127,9 +127,7 @@ def run(
         if standalone_dt is None:
             skipped_no_dt += 1
             if skipped_no_dt <= 3:
-                error_console.print(
-                    f"[dim]Debug:[/dim] asset {asset['id']} localDateTime={asset.get('localDateTime')!r} → unparseable"
-                )
+                print(f"Debug: asset {asset['id']} localDateTime={asset.get('localDateTime')!r} unparseable", flush=True)
             continue
 
         window_start = standalone_dt - timedelta(seconds=time_window)
@@ -242,11 +240,12 @@ def run(
             elif best_match["match_method"] == "perceptual":
                 perceptual_matches += 1
 
-    console.print(
+    print(
         f"Loop complete: {checked} checked, "
         f"{skipped_no_dt} skipped (no timestamp), "
         f"{skipped_no_window} skipped (outside time window), "
-        f"{len(results)} matched."
+        f"{len(results)} matched.",
+        flush=True,
     )
     console.print(f"Writing {len(results)} matches to [bold]{output_csv}[/bold]...")
     with open(output_csv, "w", newline="", encoding="utf-8") as csvfile:
